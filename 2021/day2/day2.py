@@ -30,7 +30,7 @@ def travel_course(commands):
 
 
 # cmds = read_file('course.txt')
-# print(travel_course(cmds))
+# print(travel_course(cmds)) # 1694130
 
 
 '''
@@ -61,4 +61,4 @@ def travel_course_with_aim(commands):
 
 
 cmds = read_file('course.txt')
-print(travel_course_with_aim(cmds))
+print(travel_course_with_aim(cmds)) # 1698850445

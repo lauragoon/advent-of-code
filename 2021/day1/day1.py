@@ -49,4 +49,4 @@ def count_sum_increases(depths):
 
     return ctr
 
-print(count_sum_increases(depths))
+print(count_sum_increases(depths)) # 1683

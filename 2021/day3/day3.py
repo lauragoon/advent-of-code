@@ -46,7 +46,7 @@ def get_power_consumption(report):
     return gamma * epsilon
 
 # diag_report = read_file('report.txt')
-# print(get_power_consumption(diag_report))
+# print(get_power_consumption(diag_report)) # 3633500
 
 '''
 --- Part Two ---
@@ -105,4 +105,4 @@ def get_ratings(report):
     return oxy_gen_rating * co2_scrb_rating
 
 diag_report = read_file('report.txt')
-print(get_ratings(diag_report))
+print(get_ratings(diag_report)) # 4550283
