@@ -115,5 +115,5 @@ def count_intersections(vents):
 #     return len(list(all_intersect))
 
 vent_lines = read_file('vents.txt')
-print(count_intersections(vent_lines))
+print(count_intersections(vent_lines)) # 6841 / 19258
 # print(count_intersections_alt(vent_lines))
