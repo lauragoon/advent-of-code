@@ -1,6 +1,5 @@
 '''
---- PART ONE ---
-approach walk through each pair of lines
+--- PART ONE & TWO ---
 '''
 
 # import time
@@ -37,9 +36,9 @@ def count_intersections(vents):
             line1_orien = "vertical" if line1x1 == line1x2 else ("horizontal" if line1y1 == line1y2 else "diagonal")
             line2_orien = "vertical" if line2x1 == line2x2 else ("horizontal" if line2y1 == line2y2 else "diagonal")
 
-            # ignore diagonal lines as specified in part 1
-            if line1_orien is "diagonal" or line2_orien is "diagonal":
-                continue
+            # # ignore diagonal lines as specified in part 1
+            # if line1_orien is "diagonal" or line2_orien is "diagonal":
+            #     continue
 
             m1 = (0,(line1y2 - line1y1)/abs(line1y2 - line1y1)) if line1_orien is "vertical" else \
                 (((line1x2 - line1x1)/abs(line1x2 - line1x1),0) if line1_orien is "horizontal" else \
