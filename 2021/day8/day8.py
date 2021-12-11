@@ -24,7 +24,7 @@ def find_digits(digits):
     return num
 
 # digits = read_file('digits.txt')
-# print(find_digits(digits))
+# print(find_digits(digits)) # 330
 
 '''
 --- PART TWO ---
@@ -126,4 +126,4 @@ def decipher_all_digits(digits):
 
 
 digits = read_file('digits.txt')
-print(decipher_all_digits(digits))
+print(decipher_all_digits(digits)) # 1010472

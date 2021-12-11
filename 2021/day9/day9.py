@@ -76,7 +76,7 @@ def find_risk_levels(heights):
     return lo_risk_sum
 
 # heights = read_file('heightmap.txt')
-# print(find_risk_levels(heights))
+# print(find_risk_levels(heights)) # 491
 
 '''
 --- PART TWO ---
@@ -148,4 +148,4 @@ def find_basins(heights):
     return basin_sizes[0] * basin_sizes[1] * basin_sizes[2]
 
 heights = read_file('heightmap.txt')
-print(find_basins(heights))
+print(find_basins(heights)) # 1075536
