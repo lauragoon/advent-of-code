@@ -62,18 +62,15 @@ def count_dots(grid):
 
     return num_dots
 
-def num_dots(dots, folds, max):
+def fold_dots(dots, folds, max):
     max_x = max[0]
     max_y = max[1]
-
-    # print(max_x, max_y)
 
     grid = init_grid(max_x, max_y)
     grid = fill_grid(grid, dots)
 
-    # print(grid)
-
-    for fold in folds[0:1]:
+    # for fold in folds[0:1]: # limits for part 1
+    for fold in folds:
         dir = fold[0]
         pos = fold[1]
 
@@ -82,10 +79,8 @@ def num_dots(dots, folds, max):
             diff = max_x+1 - pos
             for i in range(diff):
                 for j in range(max_y+1):
-                    # print('pos+i', pos+i)
                     if grid[j][pos+i] == '#':
                         grid[j][pos-i] = '#'
-            # grid = grid[0:pos]
             for row_num in range(max_y+1):
                 grid[row_num] = grid[row_num][0:pos]
 
@@ -96,11 +91,16 @@ def num_dots(dots, folds, max):
                 for j in range(max_x+1):
                     if grid[pos+i][j] == '#':
                         grid[pos-i][j] = '#'
-            # for row in range(max_y+1):
             grid = grid[0:pos]
 
+        max_x = len(grid[0])-1
+        max_y = len(grid)-1
 
-    return count_dots(grid)
+    return grid
+
+def num_dots(dots, folds, max):
+    return count_dots(fold_dots(dots, folds, max))
 
 dots, folds, max = read_file('instructions.txt')
-print(num_dots(dots, folds, max))
+# print(num_dots(dots, folds, max)) # 755
+print(fold_dots(dots, folds, max)) # BLKJRBAG
