@@ -1,5 +1,5 @@
 '''
---- PART ONE ---
+--- PART ONE & TWO ---
 '''
 
 def read_file(filename):
