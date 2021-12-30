@@ -20,20 +20,21 @@ def to_binary(hexa):
 # handle case when have id type 4 packet
 def literal_value_packet(bin, iter, ver_deci, id_deci):
     last_grouped = False
-    digit_offset = 6
+    digit_offset = iter + 6 # offset in the orig binary
     literal_bin = ''
     packets = []
-    new_offset = digit_offset
 
+    # while there are still groups of bin digits to process
     while not last_grouped:
 
-        curr_group = bin[iter+digit_offset : iter+digit_offset+5]
-        new_offset = iter+digit_offset+5
+        curr_group = bin[digit_offset : digit_offset+5]
+        digit_offset += 5
+
+        # reached last group
         if curr_group[0] == '0':
             last_grouped = True
 
-        literal_bin += curr_group[1:]
-        digit_offset += 5
+        literal_bin += curr_group[1:] # build up literal value binary
 
     literal_deci = int(literal_bin, 2)
 
@@ -41,36 +42,32 @@ def literal_value_packet(bin, iter, ver_deci, id_deci):
         {'version': ver_deci, 'id': id_deci, 'value': literal_deci}
     )
 
-    return new_offset, packets
+    return digit_offset, packets
 
 # handle case when have operator packet
 def operator_packet(bin, iter, ver_deci, id_deci):
-    digit_offset = 6 + iter
+    digit_offset = 6 + iter # offset in the orig binary
     packets = []
     subpackets = []
-    new_offset = digit_offset
 
     length_type_id = bin[digit_offset]
     length_type_id_deci = int(length_type_id, 2)
-    digit_offset = 7 + iter
-    new_offset = digit_offset
+    digit_offset += 1
 
     # length type 0
     if length_type_id_deci == 0:
         length_bin = bin[digit_offset:digit_offset+15]
 
-        if len(length_bin) == 0:
+        if len(length_bin) == 0: # if invalid, then should not continue to process
             packets.append(
                 {'version': ver_deci, 'id': id_deci, 'length': length_type_id_deci, 'subpackets': subpackets}
             )
-            return new_offset, packets
+            return digit_offset, packets
 
         length_deci = int(length_bin, 2)
 
-        subpacket_bin = bin[digit_offset+15: digit_offset+15+length_deci]
-
+        subpacket_bin = bin[digit_offset+15: digit_offset+15+length_deci] # subpacket binary
         digit_offset = digit_offset+15+length_deci
-        new_offset = digit_offset
 
         subpackets.extend(separate_packets(subpacket_bin, True))
 
@@ -80,7 +77,6 @@ def operator_packet(bin, iter, ver_deci, id_deci):
         num_deci = int(num_bin, 2)
 
         digit_offset = digit_offset+11
-        new_offset = digit_offset
 
         for i in range(num_deci):
 
@@ -91,21 +87,21 @@ def operator_packet(bin, iter, ver_deci, id_deci):
             sub_ver = bin[digit_offset : digit_offset+3]
             sub_id = bin[digit_offset+3 : digit_offset+6]
 
-            if len(sub_ver) < 3 or len(sub_id) < 3:
+            if len(sub_ver) < 3 or len(sub_id) < 3: # if no ver/id, then invalid package to process
                 break
 
             sub_ver_deci = int(sub_ver, 2)
             sub_id_deci = int(sub_id, 2)
 
+            # literal value
             if sub_id_deci == 4:
                 output = literal_value_packet(bin[digit_offset:], 0, sub_ver_deci, sub_id_deci)
                 digit_offset += output[0]
-                new_offset = digit_offset
                 subpackets.extend(output[1])
+            # operator
             else:
                 output = operator_packet(bin[digit_offset:], 0, sub_ver_deci, sub_id_deci)
                 digit_offset += output[0]
-                new_offset = digit_offset
                 subpackets.extend(output[1])
 
     else:
@@ -115,7 +111,7 @@ def operator_packet(bin, iter, ver_deci, id_deci):
         {'version': ver_deci, 'id': id_deci, 'length': length_type_id_deci, 'subpackets': subpackets}
     )
 
-    return new_offset, packets
+    return digit_offset, packets
 
 # separate packet binary input into list of packets
 # given hex
@@ -129,6 +125,7 @@ def separate_packets(bin, is_subpacket):
     packets = []
     iter = 0
 
+    # iterate through input binary
     while iter < len(bin):
 
         # shortest packet is 11
@@ -138,7 +135,7 @@ def separate_packets(bin, is_subpacket):
         ver = bin[iter : iter+3]
         id = bin[iter+3 : iter+6]
 
-        if len(ver) < 3 or len(id) < 3:
+        if len(ver) < 3 or len(id) < 3: # if no ver/id type then invalid package to process
             break
         
         ver_deci = int(ver, 2)
@@ -177,7 +174,7 @@ def version_sum(packets):
         if 'subpackets' in packet.keys():
             sub_search = packet['subpackets']
 
-        # if have subpackets
+        # if have subpackets, continue processing all encountered subpackets
         while len(sub_search) > 0:
             curr_packet = sub_search.pop(0)
 
@@ -189,6 +186,5 @@ def version_sum(packets):
 
     return ver_sum
 
-print(1002-960)
 packets = read_file('shorter.txt')
 print(version_sum(packets))
