@@ -56,6 +56,9 @@ struct answers process_password_policies(const char *filepath)
         num_valid2 += part_two_validity(min_amt, max_amt, letter, password);
     }
 
+    // close file
+    fclose(f);
+
     struct answers ret = { .part_one = num_valid, .part_two = num_valid2 };
     return ret;
 }
