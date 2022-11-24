@@ -234,7 +234,7 @@ int main()
     struct answers all_answers = process_passports("passports.txt");
 
     printf("Part one output: %d\n", all_answers.part_one); // 206
-    printf("Part two output: %d\n", all_answers.part_two);    
+    printf("Part two output: %d\n", all_answers.part_two); // 123   
 
     return 0;
 }
