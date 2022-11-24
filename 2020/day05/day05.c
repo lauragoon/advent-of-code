@@ -49,6 +49,31 @@ int get_seat_id(int row_num, int col_num)
     return (row_num * 8) + col_num;
 }
 
+int find_my_seat(char seats[NUM_ROWS][NUM_COLS])
+{
+    int prev_empty = 1;
+    for (int i = 0; i < NUM_ROWS; i++)
+    {
+        for (int j = 0; j < NUM_COLS; j++)
+        {
+            if (seats[i][j] == 'o' && !prev_empty)
+            {
+                return get_seat_id(i,j);
+            }
+            else if (seats[i][j] == 'o')
+            {
+                prev_empty = 1;
+            }
+            else if (seats[i][j] == 'x')
+            {
+                prev_empty = 0;
+            }
+        }
+    }
+    
+    return -1;
+}
+
 struct answers process_boarding_passes(const char *filepath)
 {
     // open file
@@ -62,6 +87,16 @@ struct answers process_boarding_passes(const char *filepath)
     // part 1 answer
     int max_seat_id = -1;
     
+    // part 2 helper var
+    char seats[NUM_ROWS][NUM_COLS];
+    for (int i = 0; i < NUM_ROWS; i++)
+    {
+        for (int j = 0; j < NUM_COLS; j++)
+        {
+            seats[i][j] = 'o';
+        }
+    }
+    
     // read through file
     char row_specifiers[NUM_ROW_SPECS+1], col_specifiers[NUM_COL_SPECS+1]; // need an extra space to store null terminator
     while (fscanf(f, "%7s%3s\n", row_specifiers, col_specifiers) > 0)
@@ -72,13 +107,19 @@ struct answers process_boarding_passes(const char *filepath)
         
         // part 1 logic
         max_seat_id = seat_id > max_seat_id ? seat_id : max_seat_id;
+        
+        // part 2 logic
+        seats[row_num][col_num] = 'x';
     }
     
     
     // close file
     fclose(f);
     
-    struct answers ret = { .part_one = max_seat_id, .part_two = -1 };
+    // part 2 logic (cont.)
+    int my_seat_id = find_my_seat(seats);
+    
+    struct answers ret = { .part_one = max_seat_id, .part_two = my_seat_id };
     return ret;
 }
 
