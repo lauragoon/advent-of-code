@@ -86,10 +86,6 @@ struct answers process_passports(const char *filepath)
                     if ((strcmp(hgt_unit, "cm") == 0 && (hgt_val >= 150 && hgt_val <= 193)) ||
                         (strcmp(hgt_unit, "in") == 0 && (hgt_val >= 59 && hgt_val <= 76)))
                     {
-                        printf("%ld", hgt_val);
-                        printf("\n");
-                        printf(hgt_unit);
-                        printf("\n\n");
                         strict_passport_fields[3] = 1;   
                     }
                 }
@@ -154,7 +150,7 @@ struct answers process_passports(const char *filepath)
                 regex_t pid_regex;
                 int pid_regex_ret;
                 char pid_msgbuf[100];
-                pid_regex_ret = regcomp(&pid_regex, "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]", 0); // compile regex
+                pid_regex_ret = regcomp(&pid_regex, "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$", 0); // compile regex
                 if (pid_regex_ret)
                 {
                     fprintf(stderr, "Could not compiel pid regex\n");
@@ -213,6 +209,17 @@ struct answers process_passports(const char *filepath)
                 strict_passport_fields[i] = 0;
             }
         }
+    }
+    
+    // hacky way to also process last passport without skipping it
+    if (passport_fields[0] == 1 && passport_fields[1] == 1 && passport_fields[2] == 1 && passport_fields[3] == 1 && passport_fields[4] == 1 && passport_fields[5] == 1 && passport_fields[6] == 1)
+    {
+        num_valid++;
+    }
+    
+    if (strict_passport_fields[0] == 1 && strict_passport_fields[1] == 1 && strict_passport_fields[2] == 1 && strict_passport_fields[3] == 1 && strict_passport_fields[4] == 1 && strict_passport_fields[5] == 1 && strict_passport_fields[6] == 1)
+    {
+        num_strict_valid++;
     }
     
     // close file
