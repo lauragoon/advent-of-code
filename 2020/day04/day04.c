@@ -81,7 +81,17 @@ struct answers process_passports(const char *filepath)
                 hgt_regex_ret = regexec(&hgt_regex, tok, 0, NULL, 0); // execute regex
                 if (!hgt_regex_ret)
                 {
-                    strict_passport_fields[3] = 1;
+                    const char *hgt_unit = &tok[strlen(tok)-2];
+                    long hgt_val = strtol(tok, &tok, 10);
+                    if ((strcmp(hgt_unit, "cm") == 0 && (hgt_val >= 150 && hgt_val <= 193)) ||
+                        (strcmp(hgt_unit, "in") == 0 && (hgt_val >= 59 && hgt_val <= 76)))
+                    {
+                        printf("%ld", hgt_val);
+                        printf("\n");
+                        printf(hgt_unit);
+                        printf("\n\n");
+                        strict_passport_fields[3] = 1;   
+                    }
                 }
                 else if (hgt_regex_ret == REG_NOMATCH)
                 {
