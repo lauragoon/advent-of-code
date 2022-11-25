@@ -32,6 +32,9 @@ struct answers process_ans(const char *filepath)
     
     // part 1
     int group_ans_sum = 0;
+    // part 2
+    int group_all_ans_sum = 0;
+    int curr_group_members_num = 0;
     
     // read through file
     int ch;
@@ -40,29 +43,43 @@ struct answers process_ans(const char *filepath)
     
     while ((ch = fgetc(f)) != EOF)
     {
+        
         if (ch != '\n')
         {
             yes_answers[char_to_int(ch)]++;
         }
         else
         {
-            if (ch == '\n' && prev_ch == '\n')
+            if (ch == '\n')
             {
-                // process previous group, since they are done
-                int curr_group_sum = 0;
-                for (int i = 0; i < 26; i++)
+                if (prev_ch == '\n')
                 {
-                    if (yes_answers[i] > 0)
+                    // process previous group, since they are done
+                    int curr_group_sum = 0;
+                    int curr_group_all_sum = 0;
+                    for (int i = 0; i < 26; i++)
                     {
-                        curr_group_sum++;
+                        if (yes_answers[i] > 0)
+                        {
+                            curr_group_sum++;
+                        }
+                        if (yes_answers[i] == curr_group_members_num)
+                        {
+                            curr_group_all_sum++;
+                        }
                     }
+                    group_ans_sum += curr_group_sum;
+                    group_all_ans_sum += curr_group_all_sum;
+                    
+                    // reset group answer tracker
+                    for (int i = 0; i < 26; i++)
+                    {
+                        yes_answers[i] = 0;   
+                    }
+                    curr_group_members_num = 0;
                 }
-                group_ans_sum += curr_group_sum;
-                
-                // reset group answer tracker
-                for (int i = 0; i < 26; i++)
-                {
-                    yes_answers[i] = 0;   
+                else {
+                    curr_group_members_num++;
                 }
             }
         }
@@ -71,20 +88,27 @@ struct answers process_ans(const char *filepath)
     }
     
     // hacky way to process last group
+    // process previous group, since they are done
     int curr_group_sum = 0;
+    int curr_group_all_sum = 0;
     for (int i = 0; i < 26; i++)
     {
         if (yes_answers[i] > 0)
         {
             curr_group_sum++;
         }
+        if (yes_answers[i] == curr_group_members_num+1) // hacky fix on group num count
+        {
+            curr_group_all_sum++;
+        }
     }
     group_ans_sum += curr_group_sum;
+    group_all_ans_sum += curr_group_all_sum;
     
     // close file
     fclose(f);
 
-    struct answers ret = { .part_one = group_ans_sum, .part_two = -1 };
+    struct answers ret = { .part_one = group_ans_sum, .part_two = group_all_ans_sum };
     return ret;
 }
 
@@ -93,7 +117,7 @@ int main()
     struct answers all_answers = process_ans("answers.txt");
 
     printf("Part one output: %d\n", all_answers.part_one); // 6161
-    printf("Part two output: %d\n", all_answers.part_two); //   
+    printf("Part two output: %d\n", all_answers.part_two); // not 2958
 
     return 0;
 }
