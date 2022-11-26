@@ -117,7 +117,7 @@ int main()
     struct answers all_answers = process_ans("answers.txt");
 
     printf("Part one output: %d\n", all_answers.part_one); // 6161
-    printf("Part two output: %d\n", all_answers.part_two); // not 2958
+    printf("Part two output: %d\n", all_answers.part_two); // 2971, need to remove last newline from input txt idk
 
     return 0;
 }
