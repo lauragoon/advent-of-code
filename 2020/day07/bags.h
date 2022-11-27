@@ -9,7 +9,7 @@ typedef struct inner_bag
     struct inner_bag *next;
 } inner_bag_t;
 
-typdef struct outer_bag
+typedef struct outer_bag
 {
     char name[MAX_BAG_NAME];
     int num_inner_bags;
