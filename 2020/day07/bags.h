@@ -16,7 +16,6 @@ typdef struct outer_bag
     struct outer_bag *next;
 } outer_bag_t;
 
-outer_bag_t **init_bag_list(void);
 
 void push_outer_bag(outer_bag_t **head, char bag_name[30]);
 void push_inner_bag(inner_bag_t **head, char bag_name[30]);
