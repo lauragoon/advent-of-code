@@ -24,7 +24,7 @@ static inner_bag_t *new_inner_bag(char bag_name[MAX_BAG_NAME])
     inner_bag_t *i_bag = malloc(sizeof(inner_bag_t));
     assert(i_bag);
     
-    strcpy(ibag->name, bag_name);
+    strcpy(i_bag->name, bag_name);
     i_bag->next = NULL;
     
     return i_bag;
