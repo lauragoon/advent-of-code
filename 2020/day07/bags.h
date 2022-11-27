@@ -21,7 +21,8 @@ typdef struct outer_bag
 void push_outer_bag(outer_bag_t **head, char bag_name[MAX_BAG_NAME]);
 void push_inner_bag(inner_bag_t **head, char bag_name[MAX_BAG_NAME]);
 
-outer_bag_t *find_bag(outer_bag_t **head, char bag_name[MAX_BAG_NAME]);
+outer_bag_t *find_outer_bag(outer_bag_t **head, char bag_name[MAX_BAG_NAME]);
+inner_bag_t *find_inner_bag(inner_bag_t **head, char bag_name[MAX_BAG_NAME]);
 
 void print_bags(outer_bag_t **head);
 
