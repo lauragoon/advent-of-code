@@ -1,7 +1,7 @@
 #ifndef __BAGS_H__
 #define __BAGS_H__
 
-# define MAX_BAG_NAME 30
+#define MAX_BAG_NAME 30
 
 typedef struct inner_bag
 {
