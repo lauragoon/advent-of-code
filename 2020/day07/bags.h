@@ -3,7 +3,6 @@
 
 # define MAX_BAG_NAME 30
 
-
 typedef struct inner_bag
 {
     char name[MAX_BAG_NAME];
