@@ -81,7 +81,13 @@ struct answers process_passports(const char *filepath)
                 hgt_regex_ret = regexec(&hgt_regex, tok, 0, NULL, 0); // execute regex
                 if (!hgt_regex_ret)
                 {
-                    strict_passport_fields[3] = 1;
+                    const char *hgt_unit = &tok[strlen(tok)-2];
+                    long hgt_val = strtol(tok, &tok, 10);
+                    if ((strcmp(hgt_unit, "cm") == 0 && (hgt_val >= 150 && hgt_val <= 193)) ||
+                        (strcmp(hgt_unit, "in") == 0 && (hgt_val >= 59 && hgt_val <= 76)))
+                    {
+                        strict_passport_fields[3] = 1;   
+                    }
                 }
                 else if (hgt_regex_ret == REG_NOMATCH)
                 {
@@ -144,7 +150,7 @@ struct answers process_passports(const char *filepath)
                 regex_t pid_regex;
                 int pid_regex_ret;
                 char pid_msgbuf[100];
-                pid_regex_ret = regcomp(&pid_regex, "[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]", 0); // compile regex
+                pid_regex_ret = regcomp(&pid_regex, "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$", 0); // compile regex
                 if (pid_regex_ret)
                 {
                     fprintf(stderr, "Could not compiel pid regex\n");
@@ -205,6 +211,17 @@ struct answers process_passports(const char *filepath)
         }
     }
     
+    // hacky way to also process last passport without skipping it
+    if (passport_fields[0] == 1 && passport_fields[1] == 1 && passport_fields[2] == 1 && passport_fields[3] == 1 && passport_fields[4] == 1 && passport_fields[5] == 1 && passport_fields[6] == 1)
+    {
+        num_valid++;
+    }
+    
+    if (strict_passport_fields[0] == 1 && strict_passport_fields[1] == 1 && strict_passport_fields[2] == 1 && strict_passport_fields[3] == 1 && strict_passport_fields[4] == 1 && strict_passport_fields[5] == 1 && strict_passport_fields[6] == 1)
+    {
+        num_strict_valid++;
+    }
+    
     // close file
     fclose(f);
 
@@ -217,7 +234,7 @@ int main()
     struct answers all_answers = process_passports("passports.txt");
 
     printf("Part one output: %d\n", all_answers.part_one); // 206
-    printf("Part two output: %d\n", all_answers.part_two);    
+    printf("Part two output: %d\n", all_answers.part_two); // 123   
 
     return 0;
 }
