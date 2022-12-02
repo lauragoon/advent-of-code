@@ -27,11 +27,19 @@ fs.readFile(filename, "utf8", (err, data) =>
     var summedCalories = calorieData
         .map(calories => 
         {
-            return calories.reduce((a, b) => a + b);
+            return calories.reduce((a,b) => a + b);
         });
         
     // console.log(util.inspect(calorieData, {maxArrayLength: null, depth:null }))
     
-    part1Ans = summedCalories.reduce((a, b) => Math.max(a,b));
+    part1Ans = summedCalories.reduce((a,b) => Math.max(a,b));
     console.log("Part 1 answer: " + part1Ans);
+
+    part2Ans = summedCalories
+        .sort(function(a,b) {return a - b})
+        .reverse()
+        .splice(0,3)
+        .reduce((a,b) => a + b);
+    console.log("Part 2 answer: " + part2Ans);
+    
 });
