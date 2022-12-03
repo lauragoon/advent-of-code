@@ -33,13 +33,13 @@ fs.readFile(filename, "utf8", (err, data) =>
     // console.log(util.inspect(calorieData, {maxArrayLength: null, depth:null }))
     
     part1Ans = summedCalories.reduce((a,b) => Math.max(a,b));
-    console.log("Part 1 answer: " + part1Ans);
+    console.log("Part 1 answer: " + part1Ans); // 69289
 
     part2Ans = summedCalories
         .sort(function(a,b) {return a - b})
         .reverse()
         .splice(0,3)
         .reduce((a,b) => a + b);
-    console.log("Part 2 answer: " + part2Ans);
+    console.log("Part 2 answer: " + part2Ans); // 205615
     
 });
