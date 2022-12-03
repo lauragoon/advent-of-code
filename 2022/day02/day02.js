@@ -5,7 +5,9 @@ const filename = "strategy.txt";
 const shapes = {
     'A': "Rock",
     'B': "Paper",
-    'C': "Scissors",
+    'C': "Scissors"
+};
+const decryptShapes = {
     'X': "Rock",
     'Y': "Paper",
     'Z': "Scissors"
@@ -18,11 +20,26 @@ const scores = {
     "OutcomeDraw": 3,
     "OutcomeWin": 6
 };
+const decryptOutcomes = {
+    'X': "OutcomeLose",
+    'Y': "OutcomeDraw",
+    'Z': "OutcomeWin"
+};
+const outcomeToIdx = {
+    "OutcomeLose": 0,
+    "OutcomeDraw": 1,
+    "OutcomeWin": 2
+};
+const shapeOutcomes = {
+    "Rock": ["Scissors", "Rock", "Paper"],
+    "Paper": ["Rock", "Paper", "Scissors"],
+    "Scissors": ["Paper", "Scissors", "Rock"]
+};
 
 function getMatchOutcome(oppShape, myShape)
 {
     var oppShapeVal = shapes[oppShape];
-    var myShapeVal = shapes[myShape];
+    var myShapeVal = decryptShapes[myShape];
 
     if (oppShapeVal == myShapeVal) return "OutcomeDraw";
 
@@ -36,10 +53,22 @@ function getMatchOutcome(oppShape, myShape)
     return "OutcomeWin";
 }
 
-function getMatchScore(myShape, matchOutcome)
-{
-    var myShapeVal = shapes[myShape];
+function getMatchScore(myShape, matchOutcome, needDecrypt=true)
+{   
+    var myShapeVal = myShape;
+    if (needDecrypt) myShapeVal = decryptShapes[myShape];
+
     return scores[myShapeVal] + scores[matchOutcome];
+}
+
+function playStrategyMatch(oppShape, stratOutcome)
+{
+    var oppShapeVal = shapes[oppShape];
+    var stratOutcomeVal = decryptOutcomes[stratOutcome];
+
+    var myShapeVal = shapeOutcomes[oppShapeVal][outcomeToIdx[stratOutcomeVal]];
+    
+    return [myShapeVal, stratOutcomeVal]
 }
 
 fs.readFile(filename, "utf8", (err, data) =>
@@ -57,7 +86,7 @@ fs.readFile(filename, "utf8", (err, data) =>
             return match.split(" ")
         });
 
-    var scoresPerMatch = processedData
+    var scoresPerMatch1 = processedData
         .map(match => {
             return [match[1], getMatchOutcome(match[0], match[1])]
         })
@@ -65,7 +94,18 @@ fs.readFile(filename, "utf8", (err, data) =>
             return getMatchScore(results[0], results[1])
         });
     
-    part1Ans = scoresPerMatch.reduce((a,b) => a + b);
-    console.log("Part 1 answer: " + part1Ans);
-    
+    part1Ans = scoresPerMatch1.reduce((a,b) => a + b);
+    console.log("Part 1 answer: " + part1Ans); // 14827
+
+    var scoresPerMatch2 = processedData
+        .map(match => {
+            return playStrategyMatch(match[0], match[1])
+        })
+        .map(results => {
+            return getMatchScore(results[0], results[1], needDecrypt=false)
+        });
+
+    part2Ans = scoresPerMatch2.reduce((a,b) => a + b);
+    console.log("Part 2 answer: " + part2Ans); // 13889
+
 });
