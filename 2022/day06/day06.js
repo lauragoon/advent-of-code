@@ -1,7 +1,7 @@
 const fs = require("fs");
 const util = require("util");
 
-const filename = "input.txt";
+const filename = "datastream.txt";
 
 fs.readFile(filename, "utf8", (err, data) =>
 {
