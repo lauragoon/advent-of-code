@@ -2,6 +2,7 @@ const fs = require("fs");
 const util = require("util");
 const readline = require("readline");
 
+
 var oneCompilerConfig = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -30,7 +31,7 @@ function Tree(name, type, size=null)
   this.root = node;
 }
 
-function Node.LocateChild(name)
+Node.prototype.LocateChild = function(name)
 {
   for (let idx = 0; idx < this.children.length; idx++)
   {
@@ -39,6 +40,33 @@ function Node.LocateChild(name)
       return this.children[idx];
   }
   return null;
+}
+
+Node.prototype.GetDirSum = function()
+{
+  if (this.type != ConstantStrings.dir)
+  {
+    return Number.NEGATIVE_INFINITY;
+  }
+  
+  else
+  {
+    let currSum = 0;
+    
+    for (let idx = 0; idx < this.children.length; idx++)
+    {
+      if (this.children[idx].type == ConstantStrings.file)
+      {
+        currSum += this.children[idx].size;
+      }
+      else
+      {
+        currSum += this.children[idx].GetDirSum();
+      }
+    }
+    
+  }
+  
 }
 
 var currCommand = "";
@@ -52,14 +80,13 @@ oneCompilerConfig.on("line", function(line)
     // create start of filesystem, guaranteed to be a $cd command
     if (fileSystemTree == null)
     {
-      fileSystemTree = Tree(processedLine[2], ConstantStrings.dir, null);
+      fileSystemTree = new Tree(processedLine[2], ConstantStrings.dir, null);
       fileSystemPointer = fileSystemTree.root;
     }
     
     // contribute to building up existing filesystem
     else
     {
-      
       // keep track of current $ command
       if (processedLine[0] == "$")
       {
@@ -85,7 +112,7 @@ oneCompilerConfig.on("line", function(line)
                 break;
                 
               default:
-                fileSystemPointer = fileSystemPointer.LocateChild(processedLine[2]);
+                fileSystemPointer = fileSystemPointer.LocateChild(cdParam);
                 if (fileSystemPointer == null)
                   console.error("Error in main/LocateChild(): No child with ".concat(name, " name found."));
                 break;
@@ -104,12 +131,20 @@ oneCompilerConfig.on("line", function(line)
           let data2 = processedLine[1];
           
           // don't add duplicate data shown via $ls
-          if (fileSystemPointer.LocateChild(data2)) == null)
+          if (fileSystemPointer.LocateChild(data2) == null)
           {
             if (data1 == ConstantStrings.dir)
-              fileSystemPointer.children.push(Node(data2, ConstantStrings.dir, null))
+            {
+              let newNode = new Node(data2, ConstantStrings.dir, null);
+              newNode.parent = fileSystemPointer;
+              fileSystemPointer.children.push(newNode)
+            }
             else
-              fileSystemPointer.children.push(Node(data1, ConstantStrings.file, parseInt(data1)))
+            {
+              let newNode = new Node(data1, ConstantStrings.file, parseInt(data1));
+              newNode.parent = fileSystemPointer;
+              fileSystemPointer.children.push(newNode);
+            }
           }
         }
         
@@ -120,11 +155,12 @@ oneCompilerConfig.on("line", function(line)
       }
     }
     
+    // console.log(fileSystemTree);
+    
 });
 
+console.log(fileSystemTree.root.GetDirSum());
 
-
-// console.log(processedLine);
     
 // console.log("Part 1 answer: " + part1Ans); // 
 // console.log("Part 2 answer: " + part2Ans); //
