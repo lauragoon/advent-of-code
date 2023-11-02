@@ -8,28 +8,37 @@ var oneCompilerConfig = readline.createInterface({
   terminal: false
 });
 
-function Node(data)
+const ConstantStrings = {
+	ls: "ls",
+	cd: "cd",
+	file: "file",
+	dir: "dir"
+}
+
+function Node(name, type, size=null)
 {
-  this.data = data;
+  this.name = name;
+  this.type = type;
+  this.size = size;
   this.parent = null;
   this.children = [];
 }
 
-function Tree(data)
+function Tree(name)
 {
-  var node = new Node(data);
+  var node = new Node(name);
   this.root = node;
 }
 
-function Node.LocateChild(data)
+function Node.LocateChild(name)
 {
   for (let idx = 0; idx < this.children.length; idx++)
   {
-    let currChildData = this.children[idx].data;
-    if (currChildData == data)
+    let currChildName = this.children[idx].name;
+    if (currChildName == name)
       return this.children[idx];
   }
-  console.error("Error in LocateChild(): No child with ".concat(data, " name found."));
+  console.error("Error in LocateChild(): No child with ".concat(name, " name found."));
   return null;
 }
 
@@ -44,7 +53,7 @@ oneCompilerConfig.on("line", function(line)
     // create start of filesystem, guaranteed to be a $cd command
     if (fileSystemTree == null)
     {
-      fileSystemTree = Tree(processedLine[2]);
+      fileSystemTree = Tree(processedLine[2], ConstantStrings.dir, null);
       fileSystemPointer = fileSystemTree.root;
     }
     
@@ -60,10 +69,10 @@ oneCompilerConfig.on("line", function(line)
         switch(currCommand)
         {
           
-          case "ls":
+          case ConstantStrings.ls:
             break;
             
-          case "cd":
+          case ConstantStrings.cd:
             let cdParam = processedLine[2];
             
             switch(cdParam)
@@ -88,7 +97,7 @@ oneCompilerConfig.on("line", function(line)
       else
       {
         
-        if (currCommand == "ls")
+        if (currCommand == ConstantStrings.ls)
         {
           break; // TODO
         }
