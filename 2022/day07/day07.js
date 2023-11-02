@@ -3,12 +3,6 @@ const util = require("util");
 const readline = require("readline");
 
 
-var oneCompilerConfig = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
-
 const ConstantStrings = {
 	ls: "ls",
 	cd: "cd",
@@ -73,7 +67,11 @@ var currCommand = "";
 var fileSystemTree = null;
 var fileSystemPointer = null;
 
-oneCompilerConfig.on("line", function(line)
+readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+}).on("line", function(line)
 {
     processedLine = line.split(" ");
     
@@ -157,9 +155,10 @@ oneCompilerConfig.on("line", function(line)
     
     // console.log(fileSystemTree);
     
+}).on("close", function(line)
+{
+  console.log(fileSystemTree.root.GetDirSum());
 });
-
-console.log(fileSystemTree.root.GetDirSum());
 
     
 // console.log("Part 1 answer: " + part1Ans); // 
