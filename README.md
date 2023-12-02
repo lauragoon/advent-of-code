@@ -1,4 +1,4 @@
-# :christmas_tree: Advent of Code :gift:
+# 🎄 Advent of Code :gift:
 Current solutions are primitive and brute-force-y.
 
 |Year|Language  |
