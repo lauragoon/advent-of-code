@@ -11,7 +11,7 @@ def process_file():
     ret_data = [seeds, seed_to_soil_map, soil_to_fertilizer_map, fertilizer_to_water_map, water_to_light_map, light_to_temperature_map, temperature_to_humidity_map, humidity_to_location_map]
     curr_map = 0
 
-    with open('05.txt') as f:
+    with open('../aoc-inputs/2023/05.txt') as f:
         for line in f:
             if line.startswith('seeds'):
                 ret_data[curr_map].extend([int(i) for i in line[7:].split()])  
@@ -42,8 +42,10 @@ def process_file():
 def get_lowest_location_num(almanac):
     seeds = almanac[0]
     lowest_location = float('inf')
+
     for seed in seeds:
         curr_source = seed
+
         for i in range(1,8): # iterate through maps
             is_found = False
             j = 0
@@ -51,9 +53,11 @@ def get_lowest_location_num(almanac):
                 if curr_source >= almanac[i][j][0] and curr_source <= almanac[i][j][1]:
                     curr_source += almanac[i][j][2] # update the new mapped value as the next source value for next map
                     is_found = True
-                j += 1
+                j += 1 # look at next new map interval within the same map
+
         if curr_source < lowest_location:
             lowest_location = curr_source
+
     return lowest_location
 
 # part 2 (condense lists of ranges)
@@ -85,8 +89,8 @@ def get_lowest_location_num_modified(almanac):
 
     for i in range(1,8): # iterate over all the maps
         new_source = []
-        temp_source = []
-        k = 0
+        temp_source = [] # for intervals that are not yet translated, but to translate before finishing up
+        k = 0 # index in the current source intervals to see which interval focus on
 
         while k < len(curr_source):
             curr_range_start = curr_source[k][0]
@@ -102,23 +106,22 @@ def get_lowest_location_num_modified(almanac):
                         new_source.append([curr_range_start+almanac[i][j][2], almanac[i][j][1]+almanac[i][j][2]])
                         temp_source.append([almanac[i][j][1]+1,curr_range_end]) # add this unaccounted for yet range
                 elif curr_range_end >= almanac[i][j][0] and curr_range_end <= almanac[i][j][1]:
-                    # onyl end section of curr range numbers are in curr new mapped bucket
+                    # only end section of curr range numbers are in curr new mapped bucket
                     if curr_range_start < almanac[i][j][0]:
                         new_source.append([almanac[i][j][0]+almanac[i][j][2],curr_range_end+almanac[i][j][2]])
                         temp_source.append([curr_range_start,almanac[i][j][0]-1]) # add this unaccounted for yet range
             
             k += 1
+
+            # consider the partial intervals that have not yet been translated into the new map
             if k >= len(curr_source) and len(temp_source) > 0:
                 k = 0
                 curr_source = temp_source
                 temp_source = []
 
-        print('christmas') # TODO: wahat if no matching in new map, then same numbers
-        print(temp_source)
+        # if there new mapped numbers, condense ranges from the new mapped numbers, though idk how it accounts for when somoe numbers don't have matches and just map number == itself
         if len(new_source) > 0:
             curr_source = condense_ranges(new_source)
-
-    print(curr_source)
 
     return sorted(curr_source, key=lambda x: x[0])[0][0]
 
@@ -128,11 +131,11 @@ def main():
     # print(almanac)
 
     ans1 = get_lowest_location_num(almanac)
-    # print(ans1)
+    print(ans1)
 
     ans2 = get_lowest_location_num_modified(almanac)
     print(ans2)
 
 
 # ------ RUN SOLUTION ------
-main()   # 388071289
+main()   # 388071289, 84206669
