@@ -60,7 +60,7 @@ struct answers process_rules(const char *filepath)
 
 int main()
 {
-    struct answers all_answers = process_rules("rules.txt");
+    struct answers all_answers = process_rules("../../aoc-inputs/2020/07.txt");
 
     printf("Part one output: %d\n", all_answers.part_one); // 
     printf("Part two output: %d\n", all_answers.part_two); //    
