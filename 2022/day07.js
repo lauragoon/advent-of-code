@@ -52,10 +52,12 @@ Node.prototype.GetDirSum = function()
       if (this.children[idx].type == ConstantStrings.file)
       {
         currSum += this.children[idx].size;
+        console.log(currSum);
       }
       else
       {
         currSum += this.children[idx].GetDirSum();
+        console.log(currSum);
       }
     }
     
@@ -140,6 +142,8 @@ readline.createInterface({
             else
             {
               let newNode = new Node(data1, ConstantStrings.file, parseInt(data1));
+              console.log("yoyo");
+              console.log(data1);
               newNode.parent = fileSystemPointer;
               fileSystemPointer.children.push(newNode);
             }
@@ -157,6 +161,7 @@ readline.createInterface({
     
 }).on("close", function(line)
 {
+  
   console.log(fileSystemTree.root.GetDirSum());
 });
 
