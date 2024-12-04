@@ -42,6 +42,6 @@ def process_file(
                     lines[i].append(split_line[i])
             else:
                 # Otherwise, just add the line (or the split line) to the output
-                lines.append(split_line[0])  # For single column, keep as a line
+                lines.append(split_line)  # For single column, keep as a line
     
     return lines
