@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from helpers import process_file
 
