@@ -5,7 +5,8 @@ def process_file(
     filename: str,
     num_col: int = 1,
     split: bool = False,
-    delim: Optional[str] = None
+    delim: Optional[str] = None,
+    use_single_line: bool = False,
 ) -> List[List[str]]:
     """
     Processes a file line-by-line, either keeping lines as-is, splitting them by
@@ -42,6 +43,7 @@ def process_file(
                     lines[i].append(split_line[i])
             else:
                 # Otherwise, just add the line (or the split line) to the output
-                lines.append(split_line[0])  # For single column, keep as a line
+                # For single column, keep as a line
+                lines.append(split_line[0] if use_single_line else split_line)
     
     return lines
