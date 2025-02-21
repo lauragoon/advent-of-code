@@ -7,3 +7,4 @@ Current solutions are primitive and brute-force-y.
 |2022|Javascript|
 |2021|Python    |
 |2020|C         |
+|2019|C#        |
